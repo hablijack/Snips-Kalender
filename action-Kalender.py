@@ -26,11 +26,12 @@ def read_configuration_file():
         return dict()
 
 def intent_callback_today(hermes, intent_message):
-    hermes.publish_end_session(intent_message.session_id, teamup.today_info(intent_message))
+    hermes.publish_end_session(intent_message.session_id, "Test")
+    # hermes.publish_end_session(intent_message.session_id, teamup.today_info(intent_message))
 
 if __name__ == "__main__":
     config = read_configuration_file()
-    teamup = Teamup(config)
+    #teamup = Teamup(config)
 
     snips_config = toml.load('/etc/snips.toml')
     if 'mqtt' in snips_config['snips-common'].keys():
