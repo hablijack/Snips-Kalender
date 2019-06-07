@@ -1,7 +1,5 @@
-# Bindings for the hermes protocol 
+# Bindings for the hermes protocol
 hermes-python>=0.7
 requests
-datetime
-json
-dateparser
 toml>=0.10.0
+dateparser
