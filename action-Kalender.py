@@ -4,7 +4,7 @@
 import configparser
 from hermes_python.hermes import Hermes, MqttOptions
 import io
-from teamup import Teamup
+#from teamup import Teamup
 import toml
 
 USERNAME_INTENTS = "hablijack"
@@ -26,13 +26,15 @@ def read_configuration_file():
         return dict()
 
 def intent_callback_today(hermes, intent_message):
+    print("drin4")
     hermes.publish_end_session(intent_message.session_id, "Test")
     # hermes.publish_end_session(intent_message.session_id, teamup.today_info(intent_message))
 
 if __name__ == "__main__":
+    print("drin")
     config = read_configuration_file()
     #teamup = Teamup(config)
-
+    print("drin2")
     snips_config = toml.load('/etc/snips.toml')
     if 'mqtt' in snips_config['snips-common'].keys():
         MQTT_BROKER_ADDRESS = snips_config['snips-common']['mqtt']
@@ -41,7 +43,7 @@ if __name__ == "__main__":
     if 'mqtt_password' in snips_config['snips-common'].keys():
         MQTT_PASSWORD = snips_config['snips-common']['mqtt_password']
     mqtt_opts = MqttOptions(username=MQTT_USERNAME, password=MQTT_PASSWORD, broker_address=MQTT_BROKER_ADDRESS)
-
+    print("drin3")
     with Hermes(mqtt_options=mqtt_opts) as h:
         h.subscribe_intent(add_postfix("todayInfo"), intent_callback_today)
         h.start()
