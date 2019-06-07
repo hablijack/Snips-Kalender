@@ -4,7 +4,7 @@
 import configparser
 from hermes_python.hermes import Hermes, MqttOptions
 import io
-from tankerkoenig import Tankerkoenig
+from teamup import Teamup
 import toml
 
 USERNAME_INTENTS = "hablijack"
