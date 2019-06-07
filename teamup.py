@@ -11,18 +11,11 @@ import sys
 class Teamup:
 
     def __init__(self, config):
-        try:
-            self.teamup_url = config['general']['teamup_url']
-        except KeyError:
-            self.teamup_url = "XXXXXXXXXXXXXXXXXXXXX"
+        self.teamup_url = "https://teamup.com/"
         try:
             self.teamup_token = config['secret']['teamup_token']
         except KeyError:
             self.teamup_token = "XXXXXXXXX"
-        try:
-            self.teamup_calendar_id = config['secret']['teamup_calendar_id']
-        except KeyError:
-            self.teamup_calendar_id = "XXXXXXXXXXX"
 
     def today_info(self, intent_message):
         TEAMUP_USER = [

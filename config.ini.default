@@ -1,6 +1,4 @@
 [global]
-teamup_url=https://teamup.com/
 
 [secret]
 teamup_token=
-teamup_calendar_id=
