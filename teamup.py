@@ -35,7 +35,9 @@ class Teamup:
         headers = {'Teamup-Token': self.teamup_token}
         req = requests.get(url, headers=headers)
         calendar = json.loads(req.text)
-        agenda = ""
+        agenda = "Du hast heute: "
         for event in calendar['events']:
-            agenda += event['title']
+            time_string = event["start_dt"]
+            event_time = datetime.datetime.strptime(time_string[:len(time_string)-3] + time_string[len(time_string)-2:], '%Y-%m-%dT%H:%M:%S%z')
+            agenda += "um " + "{0:%H:%M}".format(event_time) + "Uhr " + event['title'] + ". "
         return agenda
