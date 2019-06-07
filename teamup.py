@@ -4,7 +4,6 @@
 import requests
 import datetime
 import json
-import dateparser
 import re
 import sys
 
