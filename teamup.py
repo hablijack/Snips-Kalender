@@ -22,22 +22,40 @@ class Teamup:
             self.teamup_calendar_id = "XXXXXXXXXXX"
 
     def today_info(self, intent_message):
-        TEAMUP_USER = [
-            {"name": "Christoph", "calendar_id": "4377398"},
-            {"name": "Barbara", "calendar_id": "4377397"},
-            {"name": "Family", "calendar_id": "4377538"},
-            {"name": "Feiertage", "calendar_id": "4377396"},
-            {"name": "Geburtstage", "calendar_id": "4377496"}
-        ]
         start_date = str(datetime.date.today())
         end_date = str(datetime.date.today())
         url = self.teamup_url + self.teamup_calendar_id + "/" + "events?startDate=" + start_date + "&endDate=" + end_date
         headers = {'Teamup-Token': self.teamup_token}
         req = requests.get(url, headers=headers)
         calendar = json.loads(req.text)
-        agenda = "Du hast heute: "
+        agenda = ""
         for event in calendar['events']:
             time_string = event["start_dt"]
             event_time = datetime.datetime.strptime(time_string[:len(time_string)-3] + time_string[len(time_string)-2:], '%Y-%m-%dT%H:%M:%S%z')
-            agenda += "um " + "{0:%H:%M}".format(event_time) + "Uhr " + event['title'] + ". "
+            user_names = self.connect_calendar_names(event["subcalendar_ids"])
+            if user_names[0] == "Family":
+                user_names[0] = "Barbara"
+                user_names.append("Christoph")
+            user_string = " und ".join(user_names)
+            if len(user_names) > 1:
+                user_string += " haben heute "
+            else:
+                user_string += " hat heute "
+            agenda += user_string + "um " + "{0:%H:%M}".format(event_time) + "Uhr " + event['title'] + ". "
         return agenda
+
+    def connect_calendar_names(self, calendars):
+        ret = []
+        TEAMUP_USERS = [
+            {"name": "Christoph", "calendar_id": 4377398},
+            {"name": "Barbara", "calendar_id": 4377397},
+            {"name": "Family", "calendar_id": 4377538},
+            {"name": "Feiertage", "calendar_id": 4377396},
+            {"name": "Geburtstage", "calendar_id": 4377496}
+        ]
+        for calendar_id in calendars:
+            for user in TEAMUP_USERS:
+                if calendar_id == user["calendar_id"]:
+                    ret.append(user["name"])
+        print(ret)
+        return ret
