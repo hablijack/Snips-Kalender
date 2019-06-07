@@ -16,6 +16,10 @@ class Teamup:
             self.teamup_token = config['secret']['teamup_token']
         except KeyError:
             self.teamup_token = "XXXXXXXXX"
+        try:
+            self.teamup_calendar_id = config['secret']['teamup_calendar_id']
+        except KeyError:
+            self.teamup_calendar_id = "XXXXXXXXXXX"
 
     def today_info(self, intent_message):
         TEAMUP_USER = [
