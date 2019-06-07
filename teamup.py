@@ -2,70 +2,42 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import datetime
 import json
-import random
+import dateparser
+import re
+import sys
 
 
-class Tankerkoenig:
+class Teamup:
 
     def __init__(self, config):
-        self.weather_api_base_url = "https://creativecommons.tankerkoenig.de/json/list.php"
         try:
-            self.tankerkoenig_api_key = config['secret']['tankerkoenig_api_key']
+            self.teamup_url = config['general']['teamup_url']
         except KeyError:
-            self.tankerkoenig_api_key = "XXXXXXXXXXXXXXXXXXXXX"
+            self.teamup_url = "XXXXXXXXXXXXXXXXXXXXX"
         try:
-            self.latitude = config['general']['lat']
+            self.teamup_token = config['secret']['teamup_token']
         except KeyError:
-            self.latitude = "49.982334"
+            self.teamup_token = "XXXXXXXXX"
         try:
-            self.longitude = config['general']['long']
+            self.teamup_calendar_id = config['secret']['teamup_calendar_id']
         except KeyError:
-            self.longitude = "12.0602148"
+            self.teamup_calendar_id = "XXXXXXXXXXX"
 
-    def diesel_price(self, intent_message):
-        fuel_prices = self.get_fuelprices(intent_message)
-        if fuel_prices['status'] == 'ok':
-            cheapest = {"diesel": 100.0}
-            for station in fuel_prices['stations']:
-                if station['diesel'] <= cheapest['diesel']:
-                    cheapest = station
-            response = "Der günstigste Diesel kostet gerade: {0}€, bei der Tankstelle {1}.".format(
-                format(cheapest["diesel"], '.2f').replace('.', ','),
-                cheapest["name"]
-            )
-            return response
-        else:
-            return random.choice(["Es ist leider kein Internet verfügbar.", "Ich bin nicht mit dem Internet verbunden.", "Es ist kein Internet vorhanden."])
-
-    def benzin_price(self, intent_message):
-        fuel_prices = self.get_fuelprices(intent_message)
-        if fuel_prices['status'] == 'ok':
-            cheapest = {"e5": 100.0}
-            for station in fuel_prices['stations']:
-                if station['e5'] < cheapest['e5']:
-                    cheapest = station
-            response = "Der günstigste Super kostet gerade: {0}€, bei der Tankstelle {1}.".format(
-                format(cheapest["e5"], '.2f').replace('.', ','),
-                cheapest["name"]
-            )
-            return response
-        else:
-            return random.choice(["Es ist leider kein Internet verfügbar.", "Ich bin nicht mit dem Internet verbunden.", "Es ist kein Internet vorhanden."])
-
-    def get_fuelprices(self, intent_message):
-        tankerkoenig_url = forecast_url = "{0}/json/list.php?lat={1}&lng={2}&rad={3}&sort={4}&type={5}&apikey={6}".format(
-	       self.weather_api_base_url,
-            self.latitude,
-            self.longitude,
-            5,
-            "dist",
-            "all",
-            self.tankerkoenig_api_key
-        )
-        try:
-            r = requests.get(tankerkoenig_url)
-            json_obj = json.loads(r.content.decode('utf-8'))
-            return json_obj
-        except (requests.exceptions.ConnectionError, ValueError):
-            return {"status": "error"}
+    def today_info(self, intent_message):
+        TEAMUP_USER = [
+            {"name": "Christoph", "calendar_id": "4377398"},
+            {"name": "Barbara", "calendar_id": "4377397"},
+            {"name": "Family", "calendar_id": "4377538"},
+            {"name": "Feiertage", "calendar_id": "4377396"},
+            {"name": "Geburtstage", "calendar_id": "4377496"}
+        ]
+        start_date = str(datetime.date.today())
+        end_date = str(datetime.date.today())
+        url = self.teamup_url + self.teamup_token + "/events" + "?startDate=" + start_date + "&endDate=" + end_date
+        headers = {'Teamup-Token': self.teamup_token}
+        req = requests.get(url, headers=headers)
+        calendar = json.loads(req.text)
+        print(req.text)
+        return "Jaja das ist ein Kalender"
