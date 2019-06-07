@@ -32,9 +32,10 @@ class Teamup:
         start_date = str(datetime.date.today())
         end_date = str(datetime.date.today())
         url = self.teamup_url + self.teamup_calendar_id + "/" + "events?startDate=" + start_date + "&endDate=" + end_date
-        print(url)
         headers = {'Teamup-Token': self.teamup_token}
         req = requests.get(url, headers=headers)
-        print(req.text)
         calendar = json.loads(req.text)
-        return "Jaja das ist ein Kalender"
+        agenda = ""
+        for event in calendar['events']:
+            agenda += event['title']
+        return agenda
