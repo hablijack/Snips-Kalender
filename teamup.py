@@ -40,7 +40,7 @@ class Teamup:
             else:
                 user_string += " hat heute "
             if event["all_day"]:
-                agena += user_string + "hat heute den ganzen Tag " + event["title"] + ". "
+                agenda += user_string + "hat heute den ganzen Tag " + event["title"] + ". "
             else:
                 time_string = event["start_dt"]
                 event_time = datetime.datetime.strptime(time_string[:len(time_string)-3] + time_string[len(time_string)-2:], '%Y-%m-%dT%H:%M:%S%z')
