@@ -30,8 +30,6 @@ class Teamup:
         calendar = json.loads(req.text)
         agenda = ""
         for event in calendar['events']:
-            time_string = event["start_dt"]
-            event_time = datetime.datetime.strptime(time_string[:len(time_string)-3] + time_string[len(time_string)-2:], '%Y-%m-%dT%H:%M:%S%z')
             user_names = self.connect_calendar_names(event["subcalendar_ids"])
             if user_names[0] == "Family":
                 user_names[0] = "Barbara"
@@ -41,7 +39,12 @@ class Teamup:
                 user_string += " haben heute "
             else:
                 user_string += " hat heute "
-            agenda += user_string + "um " + "{0:%H:%M}".format(event_time) + "Uhr " + event['title'] + ". "
+            if event["all_day"]:
+                agena += user_string + "hat heute den ganzen Tag " + event["title"] + ". "
+            else:
+                time_string = event["start_dt"]
+                event_time = datetime.datetime.strptime(time_string[:len(time_string)-3] + time_string[len(time_string)-2:], '%Y-%m-%dT%H:%M:%S%z')
+                agenda += user_string + "um " + "{0:%H:%M}".format(event_time) + "Uhr " + event['title'] + ". "
         return agenda
 
     def connect_calendar_names(self, calendars):
